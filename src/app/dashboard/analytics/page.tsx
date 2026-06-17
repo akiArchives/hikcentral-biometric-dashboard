@@ -1,33 +1,58 @@
 import { createClient } from "@/utils/supabase/server";
 import { columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
-import { processBiometricLogs } from "@/utils/attendance-processor";
+import { processDailyLogs } from "@/utils/attendance-processor";
+import { DatePicker } from "@/components/ui/date-picker";
+import { Separator } from "@/components/ui/separator";
 
-export const revalidate = 0;
+interface PageProps {
+  searchParams: Promise<{ date?: string }>;
+}
 
-export default async function AttendancePage() {
+export default async function AttendancePage({ searchParams }: PageProps) {
   const supabase = await createClient();
+  const resolvedParams = await searchParams;
+
+  // HikCentral stores local time, so log_date is already in local time — no offset needed
+  const today = new Date().toISOString().split("T")[0];
+  const selectedDate = resolvedParams.date || today;
+  const isToday = selectedDate === today;
 
   const { data: rawLogs, error } = await supabase
     .from("hik_biometric_logs")
-    .select("*");
+    .select("*")
+    .eq("log_date", selectedDate)
+    .order("log_date_time", { ascending: true });
 
   if (error) {
-    console.error("Database retrieval error:", error);
+    console.error(error);
     return (
-      <div className="p-6 text-red-500">Failed to load biometric events.</div>
+      <div className="p-6 text-red-500">Error loading biometric data.</div>
     );
   }
 
-  // Map database entries to matches for PersonnelAnalytics columns
-  const processedData = processBiometricLogs(rawLogs || []);
+  const processedData = processDailyLogs(rawLogs || [], isToday);
 
   return (
-    <div className="container px-4">
-      <div className="mb-5">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-          Personnel Presence
-        </h1>
+    <div className="container mx-auto px-4">
+      <div className="mb-3 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-row items-center gap-4">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+            Daily Attendance
+          </h1>
+
+          <Separator
+            orientation="vertical"
+            className="mr-2 data-vertical:h-4 data-vertical:self-auto"
+          />
+
+          <p className="text-sm text-slate-500">
+            {isToday
+              ? "Showing today's logs"
+              : `Viewing logs for ${selectedDate}`}
+          </p>
+        </div>
+        <DatePicker selected={selectedDate} />
       </div>
 
       <DataTable columns={columns} data={processedData} />

@@ -3,6 +3,15 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Clock, Hourglass } from "lucide-react";
 
+// HikCentral stores local time but labels it +00:00. Slice the time directly
+// from the ISO string to avoid any timezone conversion.
+function formatRawTime(iso: string): string {
+  const [h, m] = iso.substring(11, 16).split(":").map(Number);
+  const ampm = h >= 12 ? "PM" : "AM";
+  const display = h % 12 || 12;
+  return `${display}:${String(m).padStart(2, "0")} ${ampm}`;
+}
+
 export type PersonnelAnalytics = {
   employee_id: string;
   employee_name: string;
@@ -65,10 +74,7 @@ export const columns: ColumnDef<PersonnelAnalytics>[] = [
       return (
         <div className="flex items-center gap-1.5 text-slate-700 font-medium font-mono text-xs">
           <Clock size={13} className="text-slate-400" />
-          {new Date(rawTime).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          {formatRawTime(rawTime)}
         </div>
       );
     },
@@ -83,10 +89,7 @@ export const columns: ColumnDef<PersonnelAnalytics>[] = [
       return (
         <div className="flex items-center gap-1.5 text-slate-700 font-medium font-mono text-xs">
           <Clock size={13} className="text-slate-400" />
-          {new Date(rawTime).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          {formatRawTime(rawTime)}
         </div>
       );
     },
