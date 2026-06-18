@@ -2,6 +2,9 @@
 
 import * as React from "react";
 
+import Image from "next/image";
+import { FingerprintPattern } from "lucide-react";
+
 import { NavMain } from "@/components/nav-main";
 // import { NavUser } from "@/components/nav-user";
 import {
@@ -14,7 +17,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import {
-  LayoutDashboard,
+  ClipboardClock,
   Users,
   ListPlus,
   UserRound,
@@ -31,18 +34,18 @@ const data = {
     {
       title: "Live Feed",
       url: "/dashboard/live-feed",
-      icon: <SquareActivity />,
+      icon: <SquareActivity style={{ width: "1.25rem", height: "1.25rem" }} />,
       isActive: true,
     },
     {
-      title: "Analytics",
+      title: "Daily Logs",
       url: "/dashboard/analytics",
-      icon: <LayoutDashboard />,
+      icon: <ClipboardClock style={{ width: "1.25rem", height: "1.25rem" }} />,
     },
     {
       title: "Employees",
       url: "/dashboard/employees",
-      icon: <Users />,
+      icon: <Users style={{ width: "1.25rem", height: "1.25rem" }} />,
     },
   ],
   navSecondary: [{}, {}],
@@ -53,23 +56,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <ListPlus className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">CLIFSA</span>
-                  <span className="truncate text-xs">Attendance</span>
-                </div>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <div className="flex items-center gap-3">
+          <FingerprintPattern className="size-8" />
+          <div className="grid text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
+            <span className="truncate font-bold">C L I F S A</span>
+            <span className="truncate text-xs text-sidebar-foreground/60">
+              Biometric Logs
+            </span>
+          </div>
+        </div>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="">
         <NavMain items={data.navMain} />
       </SidebarContent>
       {/*<SidebarFooter>

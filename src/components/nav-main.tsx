@@ -34,19 +34,20 @@ export function NavMain({
 }) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Menu</SidebarGroupLabel>
-      <SidebarMenu>
+      <SidebarMenu className="mt-5">
         {items.map((item) => (
           <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
                 tooltip={item.title}
-                className="text-sm"
+                className="text-md font-medium group-data-[collapsible=icon]:justify-center"
               >
-                <a href={item.url}>
+                <a href={item.url} className="">
                   {item.icon}
-                  <span>{item.title}</span>
+                  <span className="group-data-[collapsible=icon]:hidden">
+                    {item.title}
+                  </span>
                 </a>
               </SidebarMenuButton>
               {item.items?.length ? (
