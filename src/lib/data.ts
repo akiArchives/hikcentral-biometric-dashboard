@@ -1,14 +1,4 @@
-// data.ts
-
-export type PersonnelAnalytics = {
-  employee_id: string;
-  employee_name: string;
-  department_name?: string;
-  first_punch: string | null; // ISO timestamp string
-  last_punch: string | null; // ISO timestamp string
-  total_hours_worked: number; // Decimal hours format
-  is_currently_in: boolean;
-};
+import type { PersonnelAnalytics } from "@/app/dashboard/analytics/columns";
 
 export const analyticsData: PersonnelAnalytics[] = [
   {
@@ -18,25 +8,25 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: "2026-06-16T08:00:00.000Z",
     last_punch: "2026-06-16T17:00:00.000Z",
     total_hours_worked: 9.0,
-    is_currently_in: false, // Clocked out for the day
+    status: "present",
   },
   {
     employee_id: "EMP-2026-042",
     employee_name: "Jane Smith",
     department_name: "Marketing",
     first_punch: "2026-06-16T07:45:00.000Z",
-    last_punch: "2026-06-16T13:15:00.000Z", // Currently logged data
+    last_punch: "2026-06-16T13:15:00.000Z",
     total_hours_worked: 5.5,
-    is_currently_in: true, // Still in the building
+    status: "present",
   },
   {
     employee_id: "EMP-2026-089",
     employee_name: "Alex Rivera",
     department_name: "Human Resources",
-    first_punch: "2026-06-16T09:15:00.000Z", // Came in late
+    first_punch: "2026-06-16T09:15:00.000Z",
     last_punch: "2026-06-16T13:45:00.000Z",
     total_hours_worked: 4.5,
-    is_currently_in: true,
+    status: "late",
   },
   {
     employee_id: "EMP-2026-112",
@@ -44,17 +34,17 @@ export const analyticsData: PersonnelAnalytics[] = [
     department_name: "Engineering",
     first_punch: "2026-06-16T08:30:00.000Z",
     last_punch: "2026-06-16T17:15:00.000Z",
-    total_hours_worked: 8.75, // Parses to 8h 45m in your columns formatter
-    is_currently_in: false,
+    total_hours_worked: 8.75,
+    status: "present",
   },
   {
     employee_id: "EMP-2026-015",
     employee_name: "Sarah Jenkins",
     department_name: "Marketing",
-    first_punch: null, // Absent or hasn't clocked in today
+    first_punch: null,
     last_punch: null,
-    total_hours_worked: 0.0,
-    is_currently_in: false,
+    total_hours_worked: 0,
+    status: "absent",
   },
   {
     employee_id: "EMP-2026-204",
@@ -63,7 +53,7 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: "2026-06-16T06:00:00.000Z",
     last_punch: "2026-06-16T14:30:00.000Z",
     total_hours_worked: 8.5,
-    is_currently_in: false,
+    status: "present",
   },
   {
     employee_id: "EMP-2026-307",
@@ -72,7 +62,7 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: "2026-06-16T08:10:00.000Z",
     last_punch: "2026-06-16T17:10:00.000Z",
     total_hours_worked: 9.0,
-    is_currently_in: false,
+    status: "present",
   },
   {
     employee_id: "EMP-2026-318",
@@ -81,7 +71,7 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: "2026-06-16T07:55:00.000Z",
     last_punch: "2026-06-16T16:25:00.000Z",
     total_hours_worked: 8.5,
-    is_currently_in: false,
+    status: "present",
   },
   {
     employee_id: "EMP-2026-325",
@@ -90,7 +80,7 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: "2026-06-16T09:00:00.000Z",
     last_punch: null,
     total_hours_worked: 0,
-    is_currently_in: false,
+    status: "late",
   },
   {
     employee_id: "EMP-2026-331",
@@ -99,7 +89,7 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: "2026-06-16T08:20:00.000Z",
     last_punch: "2026-06-16T13:50:00.000Z",
     total_hours_worked: 5.5,
-    is_currently_in: true,
+    status: "present",
   },
   {
     employee_id: "EMP-2026-344",
@@ -108,7 +98,7 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: "2026-06-16T08:45:00.000Z",
     last_punch: "2026-06-16T17:30:00.000Z",
     total_hours_worked: 8.75,
-    is_currently_in: false,
+    status: "present",
   },
   {
     employee_id: "EMP-2026-356",
@@ -117,7 +107,7 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: "2026-06-16T07:30:00.000Z",
     last_punch: "2026-06-16T15:00:00.000Z",
     total_hours_worked: 7.5,
-    is_currently_in: false,
+    status: "present",
   },
   {
     employee_id: "EMP-2026-362",
@@ -126,7 +116,7 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: "2026-06-16T06:30:00.000Z",
     last_punch: "2026-06-16T14:00:00.000Z",
     total_hours_worked: 7.5,
-    is_currently_in: false,
+    status: "present",
   },
   {
     employee_id: "EMP-2026-378",
@@ -135,7 +125,7 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: "2026-06-16T09:05:00.000Z",
     last_punch: "2026-06-16T14:35:00.000Z",
     total_hours_worked: 5.5,
-    is_currently_in: true,
+    status: "late",
   },
   {
     employee_id: "EMP-2026-389",
@@ -144,7 +134,7 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: null,
     last_punch: null,
     total_hours_worked: 0,
-    is_currently_in: false,
+    status: "absent",
   },
   {
     employee_id: "EMP-2026-401",
@@ -153,7 +143,7 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: "2026-06-16T08:00:00.000Z",
     last_punch: "2026-06-16T17:00:00.000Z",
     total_hours_worked: 9.0,
-    is_currently_in: false,
+    status: "present",
   },
   {
     employee_id: "EMP-2026-413",
@@ -162,7 +152,7 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: "2026-06-16T07:00:00.000Z",
     last_punch: "2026-06-16T15:30:00.000Z",
     total_hours_worked: 8.5,
-    is_currently_in: false,
+    status: "present",
   },
   {
     employee_id: "EMP-2026-427",
@@ -171,7 +161,7 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: "2026-06-16T08:50:00.000Z",
     last_punch: "2026-06-16T14:20:00.000Z",
     total_hours_worked: 5.5,
-    is_currently_in: true,
+    status: "present",
   },
   {
     employee_id: "EMP-2026-438",
@@ -180,7 +170,7 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: "2026-06-16T09:10:00.000Z",
     last_punch: "2026-06-16T17:40:00.000Z",
     total_hours_worked: 8.5,
-    is_currently_in: false,
+    status: "late",
   },
   {
     employee_id: "EMP-2026-445",
@@ -189,7 +179,7 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: "2026-06-16T08:05:00.000Z",
     last_punch: "2026-06-16T16:35:00.000Z",
     total_hours_worked: 8.5,
-    is_currently_in: false,
+    status: "present",
   },
   {
     employee_id: "EMP-2026-459",
@@ -198,7 +188,7 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: "2026-06-16T07:45:00.000Z",
     last_punch: "2026-06-16T13:15:00.000Z",
     total_hours_worked: 5.5,
-    is_currently_in: true,
+    status: "present",
   },
   {
     employee_id: "EMP-2026-467",
@@ -207,7 +197,7 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: null,
     last_punch: null,
     total_hours_worked: 0,
-    is_currently_in: false,
+    status: "on_leave",
   },
   {
     employee_id: "EMP-2026-473",
@@ -216,7 +206,7 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: "2026-06-16T06:15:00.000Z",
     last_punch: "2026-06-16T14:45:00.000Z",
     total_hours_worked: 8.5,
-    is_currently_in: false,
+    status: "present",
   },
   {
     employee_id: "EMP-2026-481",
@@ -225,7 +215,7 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: "2026-06-16T08:30:00.000Z",
     last_punch: "2026-06-16T14:00:00.000Z",
     total_hours_worked: 5.5,
-    is_currently_in: true,
+    status: "present",
   },
   {
     employee_id: "EMP-2026-496",
@@ -234,7 +224,7 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: "2026-06-16T08:15:00.000Z",
     last_punch: "2026-06-16T17:15:00.000Z",
     total_hours_worked: 9.0,
-    is_currently_in: false,
+    status: "present",
   },
   {
     employee_id: "EMP-2026-502",
@@ -243,6 +233,6 @@ export const analyticsData: PersonnelAnalytics[] = [
     first_punch: "2026-06-16T09:00:00.000Z",
     last_punch: "2026-06-16T13:30:00.000Z",
     total_hours_worked: 4.5,
-    is_currently_in: true,
+    status: "late",
   },
 ];

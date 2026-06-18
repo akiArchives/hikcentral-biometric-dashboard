@@ -1,4 +1,10 @@
-import { PersonnelAnalytics } from "@/app/dashboard/analytics/columns";
+import {
+  PersonnelAnalytics,
+  AttendanceStatus,
+} from "@/app/dashboard/analytics/columns";
+
+// EDIT LATE_CUTOFF
+const LATE_CUTOFF = "08:15";
 
 interface RawBiometricLog {
   id: number;
@@ -21,13 +27,12 @@ export function processDailyLogs(
 ): PersonnelAnalytics[] {
   const groups: Record<number, RawBiometricLog[]> = {};
 
-  // 1. Group today's logs by employee
   logs.forEach((log) => {
     if (!groups[log.employee_id]) groups[log.employee_id] = [];
     groups[log.employee_id].push(log);
   });
 
-  // 2. Build a deduplicated master employee list
+  // DUPLICATE LIST
   const seen = new Set<number>();
   const uniqueEmployees: EmployeeStub[] = [];
   allEmployees.forEach((e) => {
@@ -37,7 +42,7 @@ export function processDailyLogs(
     }
   });
 
-  // 3. For employees with no logs today, inject an empty group
+  // ADD EMPTY GROUPS FOR UNLOGGED EMPLOYEES
   uniqueEmployees.forEach((e) => {
     if (!groups[e.employee_id]) groups[e.employee_id] = [];
   });
@@ -50,7 +55,7 @@ export function processDailyLogs(
       uniqueEmployees.find((e) => e.employee_id === empId)?.employee_name ||
       "Unregistered Token";
 
-    // 2. Sort chronologically before processing
+    // SORT LOGS
     const sortedEmpLogs = [...rawEmpLogs].sort((a, b) => {
       if (!a.log_date_time) return 1;
       if (!b.log_date_time) return -1;
@@ -60,7 +65,7 @@ export function processDailyLogs(
       );
     });
 
-    // 3. Clean data: Filter out accidental double-scans within 2 minutes of each other
+    // CLEAN DATA: FILTER OUT ACCIDENTAL DOUBLE-SCANS WITHIN 2 MINUTES OF EACH OTHER EDIT WHEN NEEDED
     const cleanedLogs: RawBiometricLog[] = [];
     sortedEmpLogs.forEach((log) => {
       if (!log.log_date_time) return;
@@ -72,7 +77,7 @@ export function processDailyLogs(
         const lastLogTime = new Date(lastSavedLog.log_date_time).getTime();
         const diffMinutes = (currentLogTime - lastLogTime) / (1000 * 60);
 
-        if (diffMinutes < 2) return; // Skip this duplicate/accidental punch
+        if (diffMinutes < 2) return; // Skip this duplicate punch
       }
       cleanedLogs.push(log);
     });
@@ -84,23 +89,22 @@ export function processDailyLogs(
         first_punch: null,
         last_punch: null,
         total_hours_worked: 0,
-        is_currently_in: false,
+        status: "absent" as AttendanceStatus,
       };
     }
 
-    // 3. Extract boundaries
+    // EXTRACT BOUNDARIES
     const firstPunch = cleanedLogs[0].log_date_time;
     const lastPunch =
       cleanedLogs.length > 1
         ? cleanedLogs[cleanedLogs.length - 1].log_date_time
         : null;
 
-    // 4. Determine presence status
-    // Odd number of punches = still inside, but only meaningful for today.
-    // For past dates, they definitely went home.
-    const isCurrentlyIn = isToday && cleanedLogs.length % 2 !== 0;
+    // DETERMINE STATUS
+    const punchTime = firstPunch ? firstPunch.substring(11, 16) : null;
+    const status: AttendanceStatus =
+      punchTime && punchTime > LATE_CUTOFF ? "late" : "present";
 
-    // 5. Calculate Total Hours
     let totalHoursWorked = 0;
     if (firstPunch && lastPunch) {
       const diffMs =
@@ -121,7 +125,7 @@ export function processDailyLogs(
       first_punch: firstPunch,
       last_punch: lastPunch,
       total_hours_worked: totalHoursWorked,
-      is_currently_in: isCurrentlyIn,
+      status,
     };
   });
 }

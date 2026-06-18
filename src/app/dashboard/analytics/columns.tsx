@@ -1,7 +1,14 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Clock, Hourglass } from "lucide-react";
+import {
+  Clock,
+  Hourglass,
+  CircleCheck,
+  CircleX,
+  Timer,
+  CalendarDays,
+} from "lucide-react";
 
 // HikCentral stores local time but labels it +00:00. Slice the time directly
 // from the ISO string to avoid any timezone conversion.
@@ -12,14 +19,16 @@ function formatRawTime(iso: string): string {
   return `${display}:${String(m).padStart(2, "0")} ${ampm}`;
 }
 
+export type AttendanceStatus = "present" | "late" | "absent" | "on_leave";
+
 export type PersonnelAnalytics = {
   employee_id: string;
   employee_name: string;
   department_name?: string;
-  first_punch: string | null; // First scan time of the day/period
-  last_punch: string | null; // Latest scan time of the day/period
-  total_hours_worked: number; // Calculated decimal or float (e.g., 8.25)
-  is_currently_in: boolean; // Is the worker currently inside the building?
+  first_punch: string | null;
+  last_punch: string | null;
+  total_hours_worked: number;
+  status: AttendanceStatus;
 };
 
 export const columns: ColumnDef<PersonnelAnalytics>[] = [
@@ -46,24 +55,45 @@ export const columns: ColumnDef<PersonnelAnalytics>[] = [
     },
   },
   {
-    accessorKey: "is_currently_in",
-    header: () => (
-      <div className="items-center justify-center align-middle">
-        Presence Status
-      </div>
-    ),
+    accessorKey: "status",
+    header: "Status",
     cell: ({ row }) => {
-      const isIn = row.getValue("is_currently_in") as boolean;
+      const status = row.getValue("status") as AttendanceStatus;
 
-      return isIn ? (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          Clocked In
-        </span>
-      ) : (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-50 text-slate-500 border border-slate-200">
-          <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-          Clocked Out
+      const styles: Record<
+        AttendanceStatus,
+        { bg: string; icon: React.ReactNode; label: string }
+      > = {
+        present: {
+          bg: "bg-emerald-50 text-emerald-700 border-emerald-200",
+          icon: <CircleCheck size={13} />,
+          label: "Present",
+        },
+        late: {
+          bg: "bg-amber-50 text-amber-700 border-amber-200",
+          icon: <Timer size={13} />,
+          label: "Late",
+        },
+        absent: {
+          bg: "bg-red-50 text-red-600 border-red-200",
+          icon: <CircleX size={13} />,
+          label: "Absent",
+        },
+        on_leave: {
+          bg: "bg-blue-50 text-blue-700 border-blue-200",
+          icon: <CalendarDays size={13} />,
+          label: "On Leave",
+        },
+      };
+
+      const { bg, icon, label } = styles[status];
+
+      return (
+        <span
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${bg}`}
+        >
+          {icon}
+          {label}
         </span>
       );
     },
