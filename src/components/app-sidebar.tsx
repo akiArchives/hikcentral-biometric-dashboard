@@ -57,16 +57,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
         <div className="flex items-center gap-3">
-          <FingerprintPattern className="size-8" />
-          <div className="grid text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-            <span className="truncate font-bold">C L I F S A</span>
+          <FingerprintPattern className="size-9" />
+          <div className="grid text-left text-lg leading-tight group-data-[collapsible=icon]:hidden">
+            <span className="truncate font-black">C L I F S A</span>
             <span className="truncate text-xs text-sidebar-foreground/60">
               Biometric Logs
             </span>
           </div>
         </div>
       </SidebarHeader>
-      <SidebarContent className="">
+      <SidebarContent className="mt-5">
         <NavMain items={data.navMain} />
       </SidebarContent>
       {/*<SidebarFooter>

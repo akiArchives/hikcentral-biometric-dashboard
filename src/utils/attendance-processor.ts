@@ -4,7 +4,7 @@ import {
 } from "@/app/dashboard/analytics/columns";
 
 // EDIT LATE_CUTOFF
-const LATE_CUTOFF = "08:15";
+const LATE_CUTOFF = "08:00";
 
 interface RawBiometricLog {
   id: number;
