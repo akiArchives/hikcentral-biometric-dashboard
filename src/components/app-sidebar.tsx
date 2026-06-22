@@ -8,7 +8,11 @@ import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
+  SidebarSeparator,
+  SidebarFooter,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
 import { ClipboardClock, Users, SquareActivity } from "lucide-react";
 
 const data = {
@@ -21,18 +25,17 @@ const data = {
     {
       title: "Live Feed",
       url: "/dashboard/live-feed",
-      icon: <SquareActivity style={{ width: "1.25rem", height: "1.25rem" }} />,
-      isActive: true,
+      icon: <SquareActivity style={{ width: "1rem", height: "1rem" }} />,
     },
     {
       title: "Daily Logs",
       url: "/dashboard/analytics",
-      icon: <ClipboardClock style={{ width: "1.25rem", height: "1.25rem" }} />,
+      icon: <ClipboardClock style={{ width: "1rem", height: "1rem" }} />,
     },
     {
       title: "Employees",
       url: "/dashboard/employees",
-      icon: <Users style={{ width: "1.25rem", height: "1.25rem" }} />,
+      icon: <Users style={{ width: "1rem", height: "1rem" }} />,
     },
   ],
   navSecondary: [{}, {}],
@@ -41,24 +44,31 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar variant="floating" {...props}>
       <SidebarHeader>
-        <div className="flex items-center gap-3">
-          <FingerprintPattern className="size-9" />
-          <div className="grid text-left text-lg leading-tight group-data-[collapsible=icon]:hidden">
+        <div className="my-2 mx-2 flex items-center gap-2">
+          <FingerprintPattern className="size-8 group-data-[collapsible=icon]:size-6" />
+          <div className="grid text-left text-md leading-tight group-data-[collapsible=icon]:hidden">
             <span className="truncate font-black">C L I F S A</span>
             <span className="truncate text-xs text-sidebar-foreground/60">
               Biometric Logs
             </span>
           </div>
         </div>
+        <Separator
+          orientation="horizontal"
+          className="mx-2 data-horizontal:w-auto group-data-[collapsible=icon]:"
+        />
       </SidebarHeader>
-      <SidebarContent className="mt-5">
+
+      <SidebarContent className="">
         <NavMain items={data.navMain} />
       </SidebarContent>
-      {/*<SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>*/}
+      <SidebarFooter className="p-3 group-data-[collapsible=icon]:p-2">
+        <div className="flex items-center justify-start group-data-[collapsible=icon]:justify-center">
+          <SidebarTrigger />
+        </div>
+      </SidebarFooter>
     </Sidebar>
   );
 }
