@@ -13,7 +13,6 @@ export default async function AttendancePage({ searchParams }: PageProps) {
   const supabase = await createClient();
   const resolvedParams = await searchParams;
 
-  // HikCentral stores local time, so log_date is already in local time — no offset needed
   const today = new Date().toISOString().split("T")[0];
   const selectedDate = resolvedParams.date || today;
   const isToday = selectedDate === today;
