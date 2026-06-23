@@ -24,8 +24,9 @@ export default async function AttendancePage({ searchParams }: PageProps) {
       .eq("log_date", selectedDate)
       .order("log_date_time", { ascending: true }),
     supabase
-      .from("hik_biometric_logs")
+      .from("employees")
       .select("employee_id, employee_name")
+      .eq("is_active", true)
       .order("employee_name", { ascending: true }),
   ]);
 
@@ -63,7 +64,6 @@ export default async function AttendancePage({ searchParams }: PageProps) {
         </div>
         <DatePicker selected={selectedDate} />
       </div>
-
       <DataTable columns={columns} data={processedData} />
     </div>
   );
