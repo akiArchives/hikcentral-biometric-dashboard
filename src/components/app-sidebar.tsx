@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { FingerprintPattern } from "lucide-react";
+import { FingerprintPattern, LayoutDashboard } from "lucide-react";
 import { NavMain } from "@/components/nav-main";
 // import { NavUser } from "@/components/nav-user";
 import {
@@ -13,7 +13,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { ClipboardClock, Users, SquareActivity } from "lucide-react";
+import { ClipboardClock, Users } from "lucide-react";
 
 const data = {
   user: {
@@ -23,10 +23,10 @@ const data = {
   },
   navMain: [
     {
-      title: "Live Feed",
-      url: "/dashboard/live-feed",
+      title: "Dashboard",
+      url: "/dashboard",
       icon: (
-        <SquareActivity
+        <LayoutDashboard
           style={{ width: "1rem", height: "1rem" }}
           strokeWidth={2.5}
         />
