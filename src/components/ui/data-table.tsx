@@ -15,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Spinner } from "@/components/ui/spinner";
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
 
 interface DataTableProps<TData, TValue> {
@@ -81,7 +82,10 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  Loading results.
+                  <div className="flex items-center justify-center gap-4 text-md text-gray-600 font-semibold">
+                    <Spinner strokeWidth={2.5} />
+                    <p>Loading results.</p>
+                  </div>
                 </TableCell>
               </TableRow>
             )}

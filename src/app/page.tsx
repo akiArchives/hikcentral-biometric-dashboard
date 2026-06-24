@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowRight, LayoutDashboard } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export default function Home() {
   return (
@@ -14,8 +14,12 @@ export default function Home() {
             Welcome to the attendance tracking and analytics system. Click below to view the analytics dashboard.
           </p> */}
         </div>
-        <Button asChild size="lg" className="w-full bg-indigo-600 justify-center gap-2 font-medium cursor-pointer">
-          <Link href="/dashboard/analytics">
+        <Button
+          asChild
+          size="lg"
+          className="w-full bg-indigo-600 justify-center gap-2 font-medium cursor-pointer"
+        >
+          <Link href="/dashboard/">
             Go to Dashboard
             <ArrowRight className="size-4 group-hover/button:translate-x-0.5 transition-transform" />
           </Link>
@@ -24,4 +28,3 @@ export default function Home() {
     </div>
   );
 }
-

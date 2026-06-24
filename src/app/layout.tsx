@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Biometric Logs",
+  title: "Attendance Logs",
 };
 
 export default function RootLayout({

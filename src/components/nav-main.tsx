@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/sidebar";
 import { ChevronRightIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 export function NavMain({
   items,
@@ -52,14 +53,14 @@ export function NavMain({
                   isActive={isActive}
                   className="h-9 text-xs font-medium group-data-[collapsible=icon]:justify-center"
                 >
-                  <a href={item.url} className="">
+                  <Link href={item.url}>
                     <span className="ml-1.5 group-data-[collapsible=icon]:ml-0">
                       {item.icon}
                     </span>
                     <span className="group-data-[collapsible=icon]:hidden">
                       {item.title}
                     </span>
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
                 {item.items?.length ? (
                   <>
@@ -77,9 +78,9 @@ export function NavMain({
                               asChild
                               isActive={pathname === subItem.url}
                             >
-                              <a href={subItem.url}>
+                              <Link href={subItem.url}>
                                 <span>{subItem.title}</span>
-                              </a>
+                              </Link>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
                         ))}
