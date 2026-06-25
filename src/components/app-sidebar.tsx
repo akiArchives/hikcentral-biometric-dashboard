@@ -63,7 +63,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar variant="floating" {...props}>
+    <Sidebar variant="sidebar" {...props}>
       <SidebarHeader>
         <div className="my-2 mx-2 flex items-center gap-2">
           <FingerprintPattern className="size-8 text-sidebar-primary group-data-[collapsible=icon]:size-6" />
