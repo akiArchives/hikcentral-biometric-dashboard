@@ -65,22 +65,22 @@ export const columns: ColumnDef<PersonnelAnalytics>[] = [
         { bg: string; icon: React.ReactNode; label: string }
       > = {
         present: {
-          bg: "bg-emerald-50 text-emerald-700 border-emerald-200",
+          bg: "bg-emerald-50 text-emerald-700 border-emerald-700",
           icon: <CircleCheck size={13} />,
           label: "Present",
         },
         late: {
-          bg: "bg-amber-50 text-amber-700 border-amber-200",
+          bg: "bg-amber-50 text-amber-700 border-amber-700",
           icon: <Timer size={13} />,
           label: "Late",
         },
         absent: {
-          bg: "bg-red-50 text-red-600 border-red-200",
+          bg: "bg-red-50 text-red-600 border-red-700",
           icon: <CircleX size={13} />,
           label: "Absent",
         },
         on_leave: {
-          bg: "bg-blue-50 text-blue-700 border-blue-200",
+          bg: "bg-blue-50 text-blue-700 border-blue-700",
           icon: <CalendarDays size={13} />,
           label: "On Leave",
         },
