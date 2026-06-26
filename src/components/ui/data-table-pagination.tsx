@@ -2,35 +2,72 @@
 
 import { type Table } from "@tanstack/react-table";
 import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-} from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
 }
 
+function getPageRange(currentPage: number, totalPages: number) {
+  const range: (number | "ellipsis")[] = [];
+
+  if (totalPages <= 5) {
+    for (let i = 0; i < totalPages; i++) {
+      range.push(i);
+    }
+  } else {
+    // Always show first page
+    range.push(0);
+
+    if (currentPage > 2) {
+      range.push("ellipsis");
+    }
+
+    // Show current page and adjacent pages
+    const start = Math.max(1, currentPage - 1);
+    const end = Math.min(totalPages - 2, currentPage + 1);
+
+    for (let i = start; i <= end; i++) {
+      range.push(i);
+    }
+
+    if (currentPage < totalPages - 3) {
+      range.push("ellipsis");
+    }
+
+    // Always show last page
+    range.push(totalPages - 1);
+  }
+
+  return range;
+}
+
 export function DataTablePagination<TData>({
   table,
 }: DataTablePaginationProps<TData>) {
+  const totalPages = table.getPageCount();
+
   return (
-    <div className="flex items-center justify-between px-2">
-      <div className="flex-1 text-sm text-muted-foreground">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-2 py-1">
+      <div className="flex-1 text-sm text-muted-foreground order-2 sm:order-1">
         {table.getFilteredSelectedRowModel().rows.length} of{" "}
         {table.getFilteredRowModel().rows.length} row(s) selected.
       </div>
-      <div className="flex items-center space-x-6 lg:space-x-8">
+      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 lg:gap-8 order-1 sm:order-2">
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Rows per page</p>
           <Select
@@ -51,52 +88,71 @@ export function DataTablePagination<TData>({
             </SelectContent>
           </Select>
         </div>
-        <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-          Page {table.getState().pagination.pageIndex + 1} of{" "}
-          {table.getPageCount()}
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="icon"
-            className="hidden size-8 lg:flex"
-            onClick={() => table.setPageIndex(0)}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <span className="sr-only">Go to first page</span>
-            <ChevronsLeft />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            className="size-8"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <span className="sr-only">Go to previous page</span>
-            <ChevronLeft />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            className="size-8"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            <span className="sr-only">Go to next page</span>
-            <ChevronRight />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            className="hidden size-8 lg:flex"
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-            disabled={!table.getCanNextPage()}
-          >
-            <span className="sr-only">Go to last page</span>
-            <ChevronsRight />
-          </Button>
-        </div>
+
+        {totalPages > 0 && (
+          <Pagination className="w-auto m-0">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (table.getCanPreviousPage()) {
+                      table.previousPage();
+                    }
+                  }}
+                  className={!table.getCanPreviousPage() ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  tabIndex={!table.getCanPreviousPage() ? -1 : undefined}
+                  aria-disabled={!table.getCanPreviousPage()}
+                />
+              </PaginationItem>
+
+              {getPageRange(
+                table.getState().pagination.pageIndex,
+                totalPages
+              ).map((page, index) => {
+                if (page === "ellipsis") {
+                  return (
+                    <PaginationItem key={`ellipsis-${index}`}>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  );
+                }
+
+                return (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        table.setPageIndex(page);
+                      }}
+                      isActive={table.getState().pagination.pageIndex === page}
+                      className="cursor-pointer"
+                    >
+                      {page + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                );
+              })}
+
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (table.getCanNextPage()) {
+                      table.nextPage();
+                    }
+                  }}
+                  className={!table.getCanNextPage() ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  tabIndex={!table.getCanNextPage() ? -1 : undefined}
+                  aria-disabled={!table.getCanNextPage()}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
       </div>
     </div>
   );

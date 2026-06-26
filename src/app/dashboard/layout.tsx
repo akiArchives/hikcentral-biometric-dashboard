@@ -1,12 +1,15 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { SiteHeader } from "@/components/site-header";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider className="h-svh overflow-hidden">
       <AppSidebar />
       <SidebarInset>
-        <div className="pt-5 h-full">{children}</div>
+        <SiteHeader />
+
+        <div className="h-full overflow-y-auto">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

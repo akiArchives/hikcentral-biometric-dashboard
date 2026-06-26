@@ -9,7 +9,7 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { ChartBarStacked } from "@/components/chart-bar-stacked";
 import {
   CalendarCheck2,
   UserRoundX,
@@ -55,6 +55,7 @@ export default async function DashboardPage() {
       supabase
         .from("hik_biometric_logs")
         .select("*")
+        .eq("log_date", today)
         .order("log_date_time", { ascending: false })
         .limit(5),
     ]);
@@ -86,32 +87,17 @@ export default async function DashboardPage() {
   // Process today's attendance logs
   const processedData = processDailyLogs(rawLogs, allEmployees, true);
 
-  const presentCount = processedData.filter((emp) => emp.status === "present").length;
+  const presentCount = processedData.filter(
+    (emp) => emp.status === "present",
+  ).length;
   const lateCount = processedData.filter((emp) => emp.status === "late").length;
-  const absentCount = processedData.filter((emp) => emp.status === "absent").length;
+  const absentCount = processedData.filter(
+    (emp) => emp.status === "absent",
+  ).length;
   const totalCount = allEmployees.length;
 
   return (
-    <div className="w-full h-full pb-10 mt-5 px-4 flex flex-col gap-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="ml-3 flex flex-row items-center gap-4">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-700">
-            Dashboard
-          </h1>
-          <Separator orientation="vertical" />
-          <p className="text-sm text-gray-400">Overview</p>
-        </div>
-        <p className="text-xs text-gray-400 mr-3">
-          Today: {today}
-        </p>
-      </div>
-
-      {errorMsg && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
-          {errorMsg}
-        </div>
-      )}
-
+    <div className="w-full h-full p-4 flex flex-col gap-5">
       {/*Cards*/}
       <div className="grid grid-cols-4 gap-6 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card">
         <Card className="@container/card">
@@ -120,7 +106,7 @@ export default async function DashboardPage() {
               <span className="size-2 rounded-full bg-emerald-500"></span>
               Present
             </CardDescription>
-            <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+            <CardTitle className="text-2xl font-semibold text-gray-700 tabular-nums @[250px]/card:text-3xl">
               {presentCount}
             </CardTitle>
             <CardAction>
@@ -148,7 +134,7 @@ export default async function DashboardPage() {
               <span className="size-2 rounded-full bg-yellow-500"></span>
               Late
             </CardDescription>
-            <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+            <CardTitle className="text-2xl font-semibold text-gray-700 tabular-nums @[250px]/card:text-3xl">
               {lateCount}
             </CardTitle>
             <CardAction>
@@ -176,7 +162,7 @@ export default async function DashboardPage() {
               <span className="size-2 rounded-full bg-red-500"></span>
               Absent
             </CardDescription>
-            <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+            <CardTitle className="text-2xl font-semibold text-gray-700 tabular-nums @[250px]/card:text-3xl">
               {absentCount}
             </CardTitle>
             <CardAction>
@@ -204,7 +190,7 @@ export default async function DashboardPage() {
               <span className="size-2 rounded-full bg-indigo-500"></span>
               Total Employees
             </CardDescription>
-            <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+            <CardTitle className="text-2xl font-semibold text-gray-700 tabular-nums @[250px]/card:text-3xl">
               {totalCount}
             </CardTitle>
             <CardAction>
@@ -228,49 +214,52 @@ export default async function DashboardPage() {
       </div>
 
       {/* BIG CARD - RECENT LOGS */}
-      <Card className="rounded-md flex flex-col min-h-[300px]">
-        <CardHeader className="text-gray-600">
-          <CardDescription className="text-sm font-semibold flex items-center gap-2">
-            <Fingerprint className="size-4 text-primary" />
-            Recent Logs
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex-1 p-6 pt-0">
-          {recentLogs.length > 0 ? (
-            <div className="divide-y divide-gray-100 dark:divide-slate-800">
-              {recentLogs.map((log) => (
-                <div key={log.id} className="py-3 flex items-center justify-between group hover:bg-slate-50/50 dark:hover:bg-slate-900/30 px-2 rounded-md transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
-                      <Users className="size-5" />
+
+      <div className="flex flex-row w-full h-fit rounded-xl gap-6">
+        <ChartBarStacked />
+        <Card className="flex flex-col w-fit h-fit shadow-md overflow-visible">
+          <CardHeader className="text-gray-600">
+            <CardTitle className="text-sm font-medium flex items-center gap-2 whitespace-nowrap">
+              Recent Logs
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="rounded-none flex-1 px-3 whitespace-nowrap">
+            {recentLogs.length > 0 ? (
+              <div className="divide-y rounded-none divide-gray-100 dark:divide-slate-800">
+                {recentLogs.map((log) => (
+                  <div
+                    key={log.id}
+                    className="py-2 flex items-center justify-between group hover:bg-slate-50/50 dark:hover:bg-slate-900/30 px-2 transition-colors"
+                  >
+                    <div className="flex items-center gap-3 mr-50">
+                      <div>
+                        <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+                          {log.employee_name || "Unregistered Token"}
+                        </p>
+                        <p className="text-xs text-slate-400 font-mono">
+                          ID: {log.employee_id}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
-                        {log.employee_name || "Unregistered Token"}
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                        {log.log_time ? formatTime12h(log.log_time) : "—"}
                       </p>
                       <p className="text-xs text-slate-400 font-mono">
-                        ID: {log.employee_id}
+                        {log.log_date || "—"}
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                      {log.log_time ? formatTime12h(log.log_time) : "—"}
-                    </p>
-                    <p className="text-xs text-slate-400 font-mono">
-                      {log.log_date || "—"}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center h-full min-h-[200px] text-slate-400">
-              <p className="text-sm">No recent logs found</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full min-h-50 text-slate-400">
+                <p className="text-sm">No recent logs found</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

@@ -19,4 +19,3 @@ function getServerSnapshot() {
 export function useIsMobile() {
   return React.useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
-
