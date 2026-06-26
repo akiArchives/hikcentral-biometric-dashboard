@@ -35,18 +35,51 @@ export default async function DashboardPage() {
   const supabase = await createClient();
   const today = new Date().toISOString().split("T")[0];
 
-  let rawLogs: any[] = [];
+  // Calculate Monday of the current week based on today's date
+  const [year, month, day] = today.split("-").map(Number);
+  const todayDate = new Date(year, month - 1, day, 12, 0, 0);
+  const dayOfWeek = todayDate.getDay(); // 0 = Sunday, 1 = Monday, ...
+  
+  const monday = new Date(todayDate);
+  const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  monday.setDate(todayDate.getDate() + diffToMonday);
+
+  const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  const weekDates = weekDays.map((_, index) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + index);
+    
+    // Format as YYYY-MM-DD
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const dayVal = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${dayVal}`;
+  });
+
+  // Format week range label (e.g. "June 22 - 26")
+  const formatLabelDate = (dString: string) => {
+    const [y, m, d] = dString.split("-").map(Number);
+    const dateObj = new Date(y, m - 1, d, 12, 0, 0);
+    const monthName = dateObj.toLocaleDateString("en-US", { month: "long" });
+    return { month: monthName, day: dateObj.getDate() };
+  };
+
+  const startLabel = formatLabelDate(weekDates[0]);
+  const endLabel = formatLabelDate(weekDates[4]);
+  
+  let weekRangeLabel = "";
+  if (startLabel.month === endLabel.month) {
+    weekRangeLabel = `${startLabel.month} ${startLabel.day} - ${endLabel.day}`;
+  } else {
+    weekRangeLabel = `${startLabel.month} ${startLabel.day} - ${endLabel.month} ${endLabel.day}`;
+  }
+
   let allEmployees: any[] = [];
-  let recentLogs: any[] = [];
+  let weeklyLogs: any[] = [];
   let errorMsg = "";
 
   try {
-    const [logsRes, empRes, recentRes] = await Promise.all([
-      supabase
-        .from("hik_biometric_logs")
-        .select("*")
-        .eq("log_date", today)
-        .order("log_date_time", { ascending: true }),
+    const [empRes, logsRes] = await Promise.all([
       supabase
         .from("employees")
         .select("employee_id, employee_name")
@@ -55,17 +88,10 @@ export default async function DashboardPage() {
       supabase
         .from("hik_biometric_logs")
         .select("*")
-        .eq("log_date", today)
-        .order("log_date_time", { ascending: false })
-        .limit(5),
+        .gte("log_date", weekDates[0])
+        .lte("log_date", weekDates[4])
+        .order("log_date_time", { ascending: true }),
     ]);
-
-    if (logsRes.error) {
-      console.error("Logs fetch error:", logsRes.error);
-      errorMsg = "Error loading logs from database.";
-    } else {
-      rawLogs = logsRes.data || [];
-    }
 
     if (empRes.error) {
       console.error("Employees fetch error:", empRes.error);
@@ -74,18 +100,41 @@ export default async function DashboardPage() {
       allEmployees = empRes.data || [];
     }
 
-    if (recentRes.error) {
-      console.error("Recent logs fetch error:", recentRes.error);
+    if (logsRes.error) {
+      console.error("Weekly logs fetch error:", logsRes.error);
+      errorMsg = "Error loading attendance logs.";
     } else {
-      recentLogs = recentRes.data || [];
+      weeklyLogs = logsRes.data || [];
     }
   } catch (err) {
     console.error("Unexpected fetch exception:", err);
     errorMsg = "An unexpected error occurred while fetching data.";
   }
 
+  // Filter today's raw logs from the weekly logs in-memory
+  const rawLogs = weeklyLogs.filter((log) => log.log_date === today);
+
+  // Recent logs (today's logs, sorted descending, limit 5)
+  const recentLogs = [...rawLogs].reverse().slice(0, 5);
+
   // Process today's attendance logs
   const processedData = processDailyLogs(rawLogs, allEmployees, true);
+
+  // Process weekly chart data dynamically
+  const chartData = weekDays.map((dayName, index) => {
+    const dateStr = weekDates[index];
+    const dailyLogs = weeklyLogs.filter((log) => log.log_date === dateStr);
+    const processed = processDailyLogs(dailyLogs, allEmployees);
+    
+    const present = processed.filter((emp) => emp.status === "present").length;
+    const late = processed.filter((emp) => emp.status === "late").length;
+    
+    return {
+      day: dayName,
+      present,
+      late,
+    };
+  });
 
   const presentCount = processedData.filter(
     (emp) => emp.status === "present",
@@ -216,7 +265,7 @@ export default async function DashboardPage() {
       {/* BIG CARD - RECENT LOGS */}
 
       <div className="flex flex-row w-full h-fit rounded-xl gap-6">
-        <ChartBarStacked />
+        <ChartBarStacked data={chartData} weekRange={weekRangeLabel} />
         <Card className="flex flex-col w-fit h-fit shadow-md overflow-visible">
           <CardHeader className="text-gray-600">
             <CardTitle className="text-sm font-medium flex items-center gap-2 whitespace-nowrap">

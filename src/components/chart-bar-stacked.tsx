@@ -1,6 +1,5 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 import {
@@ -22,36 +21,38 @@ import {
 
 export const description = "A stacked bar chart with a legend";
 
-const chartData = [
-  { day: "January", present: 186, absent: 80 },
-  { day: "February", present: 305, absent: 200 },
-  { day: "March", present: 237, absent: 120 },
-  { day: "April", present: 73, absent: 190 },
-  { day: "May", present: 209, absent: 130 },
-  { day: "June", present: 214, absent: 140 },
-];
-
 const chartConfig = {
-  Present: {
-    label: "present",
+  present: {
+    label: "Present",
     color: "var(--chart-1)",
   },
-  Absent: {
-    label: "absent",
+  late: {
+    label: "Late",
     color: "var(--chart-2)",
   },
 } satisfies ChartConfig;
 
-export function ChartBarStacked() {
+interface ChartDataPoint {
+  day: string;
+  present: number;
+  late: number;
+}
+
+interface ChartBarStackedProps {
+  data: ChartDataPoint[];
+  weekRange: string;
+}
+
+export function ChartBarStacked({ data, weekRange }: ChartBarStackedProps) {
   return (
     <Card className="shadow-md w-full">
       <CardHeader>
         <CardTitle>Weekly Attendance Metrics</CardTitle>
-        <CardDescription>June 22 - 26</CardDescription>
+        <CardDescription>{weekRange}</CardDescription>
       </CardHeader>
       <CardContent className="">
-        <ChartContainer config={chartConfig} className="">
-          <BarChart accessibilityLayer data={chartData}>
+        <ChartContainer config={chartConfig} className="aspect-auto h-[300px] w-full">
+          <BarChart accessibilityLayer data={data}>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="day"
@@ -65,14 +66,16 @@ export function ChartBarStacked() {
             <Bar
               dataKey="present"
               stackId="a"
-              fill="var(--color-desktop)"
-              radius={[0, 0, 4, 4]}
+              fill="var(--color-present)"
+              radius={[0, 0, 10, 10]}
+              isAnimationActive={false}
             />
             <Bar
-              dataKey="absent"
+              dataKey="late"
               stackId="a"
-              fill="var(--color-mobile)"
-              radius={[4, 4, 0, 0]}
+              fill="var(--color-late)"
+              radius={[10, 10, 0, 0]}
+              isAnimationActive={false}
             />
           </BarChart>
         </ChartContainer>
