@@ -1,13 +1,20 @@
+import { Skeleton } from "@/components/ui/skeleton";
+import { Suspense } from "react";
+
 export default function ReportsPage() {
   return (
-    <div className="w-full my-5 px-4">
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="ml-3 flex flex-row items-center gap-4">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-700">
-            Reports
-          </h1>
+    <div className="w-full h-full p-4">
+      <Suspense fallback={
+        <div className="w-full h-full flex flex-col gap-4">
+          <Skeleton className="w-full h-16" />
+          <Skeleton className="w-full h-full" />
         </div>
-      </div>
+      }>
+        <div className="w-full h-full flex flex-col gap-4">
+          <Skeleton className="w-full h-16" />
+          <Skeleton className="w-full h-full" />
+        </div>
+      </Suspense>
     </div>
   );
 }

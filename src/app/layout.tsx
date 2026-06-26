@@ -19,24 +19,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${inter.variable} font-sans`}
-    >
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} font-sans`}>
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              const storedTheme = localStorage.getItem('theme');
-              if (!storedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-              } else if (storedTheme) {
-                document.documentElement.setAttribute('data-theme', storedTheme);
-              }
-            `,
-          }}
-        />
+
       </head>
       <body className="h-full">
         <TooltipProvider>
@@ -47,8 +32,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
-          </ThemeProvider>
-        </TooltipProvider>
+          </ThemeProvider></TooltipProvider>
       </body>
     </html>
   );

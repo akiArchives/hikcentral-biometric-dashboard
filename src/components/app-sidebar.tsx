@@ -8,7 +8,6 @@ import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
-  SidebarSeparator,
   SidebarFooter,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
@@ -80,17 +79,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           orientation="horizontal"
           className="mx-1 data-horizontal:w-auto group-data-[collapsible=icon]:self-stretch group-data-[collapsible=icon]:mx-1"
         />
-
       </SidebarHeader>
 
       <SidebarContent className="">
         <NavMain items={data.navMain} />
       </SidebarContent>
-      <SidebarFooter className="p-3 group-data-[collapsible=icon]:p-2">
+      {/*<SidebarFooter className="p-3 group-data-[collapsible=icon]:p-2">
         <div className="flex justify-end group-data-[collapsible=icon]:justify-center">
           <SidebarTrigger />
         </div>
-      </SidebarFooter>
+      </SidebarFooter>*/}
     </Sidebar>
   );
 }

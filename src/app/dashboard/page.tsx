@@ -261,8 +261,11 @@ export default async function DashboardPage() {
       {/* BIG CARD - RECENT LOGS */}
 
       <div className="flex flex-row w-full h-fit rounded-xl gap-6">
+        {/* CHART BAR */}
         <ChartBarStacked data={chartData} weekRange={weekRangeLabel} />
-        <Card className="flex flex-col w-fit h-fit shadow-md overflow-visible">
+
+        {/* RECENT LOGS */}
+        <Card className="flex flex-col w-[380px] h-fit shadow-md overflow-visible">
           <CardHeader className="text-gray-600">
             <CardTitle className="text-sm font-medium flex items-center gap-2 whitespace-nowrap">
               Recent Logs
@@ -276,7 +279,7 @@ export default async function DashboardPage() {
                     key={log.id}
                     className="py-2 flex items-center justify-between group hover:bg-slate-50/50 dark:hover:bg-slate-900/30 px-2 transition-colors"
                   >
-                    <div className="flex items-center gap-3 mr-50">
+                    <div className="flex items-center gap-3">
                       <div>
                         <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
                           {log.employee_name || "Unregistered Token"}
