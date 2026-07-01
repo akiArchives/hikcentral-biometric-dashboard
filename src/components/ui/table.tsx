@@ -4,11 +4,26 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-function Table({ className, ...props }: React.ComponentProps<"table">) {
+interface TableProps extends React.ComponentProps<"table"> {
+  noWrapper?: boolean;
+  divClassname?: string;
+}
+
+function Table({ className, noWrapper, divClassname, ...props }: TableProps) {
+  if (noWrapper) {
+    return (
+      <table
+        data-slot="table"
+        className={cn("w-full caption-bottom text-sm", className)}
+        {...props}
+      />
+    );
+  }
+
   return (
     <div
       data-slot="table-container"
-      className="relative w-full overflow-x-auto"
+      className={cn("relative w-full overflow-x-auto", divClassname)}
     >
       <table
         data-slot="table"

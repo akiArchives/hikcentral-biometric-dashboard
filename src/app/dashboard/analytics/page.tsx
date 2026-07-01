@@ -42,7 +42,7 @@ export default async function AttendancePage({ searchParams }: PageProps) {
   );
 
   return (
-    <div className="w-full my-4 px-4">
+    <div className="w-full h-auto my-4 px-4">
       <DataTable columns={columns} data={processedData} />
     </div>
   );
