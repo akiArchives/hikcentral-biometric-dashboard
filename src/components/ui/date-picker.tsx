@@ -3,7 +3,7 @@
 import * as React from "react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ interface DatePickerProps {
 
 export function DatePicker({ selected, label }: DatePickerProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   // Parse YYYY-MM-DD safely into local timezone Date
   const date = React.useMemo(() => {
@@ -35,7 +36,10 @@ export function DatePicker({ selected, label }: DatePickerProps) {
       const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
       const day = String(selectedDate.getDate()).padStart(2, "0");
       const dateString = `${year}-${month}-${day}`;
-      router.push(`?date=${dateString}`);
+      
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("date", dateString);
+      router.push("?" + params.toString());
     }
   };
 

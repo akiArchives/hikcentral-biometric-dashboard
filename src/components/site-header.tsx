@@ -12,7 +12,13 @@ export function SiteHeader() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const today = React.useMemo(() => new Date().toISOString().split("T")[0], []);
+  const today = React.useMemo(() => {
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  }, []);
 
   // Determine title, subtitle, and right-side controls based on path
   let title = "Dashboard";

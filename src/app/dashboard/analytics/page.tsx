@@ -11,9 +11,12 @@ export default async function AttendancePage({ searchParams }: PageProps) {
   const supabase = await createClient();
   const resolvedParams = await searchParams;
 
-  const today = new Date().toISOString().split("T")[0];
+  const d = new Date();
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  const today = `${yyyy}-${mm}-${dd}`;
   const selectedDate = resolvedParams.date || today;
-  const isToday = selectedDate === today;
 
   const [{ data: rawLogs, error }, { data: allEmployees }] = await Promise.all([
     supabase
@@ -39,7 +42,6 @@ export default async function AttendancePage({ searchParams }: PageProps) {
   const processedData = processDailyLogs(
     rawLogs || [],
     allEmployees || [],
-    isToday,
   );
 
   return (

@@ -10,7 +10,7 @@ describe("processDailyLogs", () => {
 
   it("should mark unlogged employees as absent with 0 hours", () => {
     const logs: Parameters<typeof processDailyLogs>[0] = [];
-    const result = processDailyLogs(logs, mockEmployees, false);
+    const result = processDailyLogs(logs, mockEmployees);
 
     expect(result).toHaveLength(3);
     const charlie = result.find((r) => r.employee_id === "3");
@@ -52,7 +52,7 @@ describe("processDailyLogs", () => {
       },
     ];
 
-    const result = processDailyLogs(logs, mockEmployees, false);
+    const result = processDailyLogs(logs, mockEmployees);
     const alice = result.find((r) => r.employee_id === "1");
 
     expect(alice).toBeDefined();
@@ -83,7 +83,7 @@ describe("processDailyLogs", () => {
       },
     ];
 
-    const result = processDailyLogs(logs, mockEmployees, false);
+    const result = processDailyLogs(logs, mockEmployees);
     const alice = result.find((r) => r.employee_id === "1");
     const bob = result.find((r) => r.employee_id === "2");
 
@@ -111,7 +111,7 @@ describe("processDailyLogs", () => {
       },
     ];
 
-    const result = processDailyLogs(logs, mockEmployees, false);
+    const result = processDailyLogs(logs, mockEmployees);
     const alice = result.find((r) => r.employee_id === "1");
 
     expect(alice?.first_punch).toBe("2026-06-22T08:00:00.000Z");
@@ -157,8 +157,8 @@ describe("processDailyLogs", () => {
       },
     ];
 
-    const result1 = processDailyLogs(logs1, mockEmployees, false);
-    const result2 = processDailyLogs(logs2, mockEmployees, false);
+    const result1 = processDailyLogs(logs1, mockEmployees);
+    const result2 = processDailyLogs(logs2, mockEmployees);
 
     const alice = result1.find((r) => r.employee_id === "1");
     const bob = result2.find((r) => r.employee_id === "2");
@@ -179,7 +179,7 @@ describe("processDailyLogs", () => {
       },
     ];
 
-    const result = processDailyLogs(logs, mockEmployees, false);
+    const result = processDailyLogs(logs, mockEmployees);
     const alice = result.find((r) => r.employee_id === "1");
 
     expect(alice?.first_punch).toBe("2026-06-22T08:00:00.000Z");

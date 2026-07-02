@@ -1,7 +1,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { Suspense } from "react";
 
-export default function SettingsPage() {
+export default function SettingsLoading() {
   return (
     <div className="w-full h-full p-4">
       <Suspense fallback={

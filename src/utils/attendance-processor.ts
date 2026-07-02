@@ -23,7 +23,6 @@ export interface EmployeeStub {
 export function processDailyLogs(
   logs: RawBiometricLog[],
   allEmployees: EmployeeStub[],
-  isToday: boolean = true,
 ): PersonnelAnalytics[] {
   const groups: Record<number, RawBiometricLog[]> = {};
 

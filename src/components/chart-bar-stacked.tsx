@@ -19,7 +19,6 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { Eye } from "lucide-react";
 import { DatePicker } from "@/components/ui/date-picker";
 
 export const description = "A stacked bar chart with a legend";

@@ -37,10 +37,17 @@ export default async function DashboardPage({
 }) {
   const { date } = await searchParams;
   const supabase = await createClient();
+  
+  const d = new Date();
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  const localToday = `${yyyy}-${mm}-${dd}`;
+
   const today =
     date && /^\d{4}-\d{2}-\d{2}$/.test(date) && !isNaN(Date.parse(date))
       ? date
-      : new Date().toISOString().split("T")[0];
+      : localToday;
 
   // Calculate Monday of the current week based on today's date
   const [year, month, day] = today.split("-").map(Number);
@@ -134,7 +141,7 @@ export default async function DashboardPage({
   const recentLogs = [...rawLogs].reverse().slice(0, 5);
 
   // Process today's attendance logs
-  const processedData = processDailyLogs(rawLogs, allEmployees, true);
+  const processedData = processDailyLogs(rawLogs, allEmployees);
 
   // Process weekly chart data dynamically
   const chartData = weekDays.map((dayName, index) => {
