@@ -16,9 +16,10 @@ import {
 
 interface DatePickerProps {
   selected: string; // "YYYY-MM-DD"
+  label?: string; // Optional label to override the default "PPP" format
 }
 
-export function DatePicker({ selected }: DatePickerProps) {
+export function DatePicker({ selected, label }: DatePickerProps) {
   const router = useRouter();
 
   // Parse YYYY-MM-DD safely into local timezone Date
@@ -49,7 +50,7 @@ export function DatePicker({ selected }: DatePickerProps) {
           )}
         >
           <CalendarIcon className="h-4 w-4 text-primary-foreground" />
-          {date ? format(date, "PPP") : <span>Pick a date</span>}
+          {label ? <span>{label}</span> : (date ? format(date, "PPP") : <span>Pick a date</span>)}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="end">
