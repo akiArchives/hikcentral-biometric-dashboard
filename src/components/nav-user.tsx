@@ -76,28 +76,17 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <SparklesIcon />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
+            {/* <DropdownMenuGroup>
+              {/* <DropdownMenuItem>
                 <BadgeCheckIcon />
                 Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCardIcon />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
+              </DropdownMenuItem> 
+            <DropdownMenuItem>
                 <BellIcon />
                 Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+              </DropdownMenuItem> 
+          </DropdownMenuGroup> 
+          {/* <DropdownMenuSeparator /> */}
             <DropdownMenuItem onClick={() => logout()}>
               <LogOutIcon />
               Log out
@@ -105,6 +94,6 @@ export function NavUser({
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
-    </SidebarMenu>
+    </SidebarMenu >
   );
 }

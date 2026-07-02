@@ -3,16 +3,18 @@
 import * as React from "react";
 import { FingerprintPattern, LayoutDashboard } from "lucide-react";
 import { NavMain } from "@/components/nav-main";
-import { NavUser } from "@/components/nav-user";
+import { logout } from "@/app/(login)/actions";
 import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
   SidebarFooter,
-  SidebarTrigger,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { ClipboardClock, ChartBar, Settings } from "lucide-react";
+import { ClipboardClock, ChartBar, Settings, LogOut } from "lucide-react";
 
 const data = {
   user: {
@@ -56,8 +58,6 @@ const data = {
       ),
     },
   ],
-  navSecondary: [{}, {}],
-  projects: [{}, {}, {}],
 };
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
@@ -69,7 +69,12 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 }
 
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
-  const sidebarUser = user || data.user;
+  const [isLoggingOut, setIsLoggingOut] = React.useState(false);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    await logout();
+  };
 
   return (
     <Sidebar variant="sidebar" {...props}>
@@ -95,10 +100,23 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter className="p-3 group-data-[collapsible=icon]:p-2">
-        <NavUser user={sidebarUser} />
-        <div className="flex justify-end group-data-[collapsible=icon]:justify-center">
-          <SidebarTrigger />
-        </div>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              tooltip="Log out"
+              className="h-9 text-xs font-medium hover:text-red-500 hover:bg-red-100 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]: group-data-[collapsible=icon]:size-9! transition-colors cursor-pointer"
+            >
+              <span className="ml-1.5 group-data-[collapsible=icon]:ml-0">
+                <LogOut style={{ width: "1rem", height: "1rem" }} strokeWidth={2.5} />
+              </span>
+              <span className="group-data-[collapsible=icon]:hidden">
+                {isLoggingOut ? "Logging out..." : "Log out"}
+              </span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
   );
